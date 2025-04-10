@@ -1,10 +1,6 @@
 import fastify from "fastify";
 import fastifyCors from "@fastify/cors";
-<<<<<<< HEAD
 import { routes } from "./routes/costumerRoutes";
-=======
-import { routes } from "./routes/routes";
->>>>>>> c3bf14305b63924b0f114f38849c7d5ac4cf8a44
 
 
 const app = fastify()
