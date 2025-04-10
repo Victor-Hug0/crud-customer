@@ -12,7 +12,10 @@ model Customer {
   name String
   email String 
   password String
+<<<<<<< HEAD
   age Int
+=======
+>>>>>>> c3bf14305b63924b0f114f38849c7d5ac4cf8a44
   status Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())

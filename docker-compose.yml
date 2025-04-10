@@ -5,9 +5,15 @@ services:
     image: postgres:17
     restart: always
     volumes:
+<<<<<<< HEAD
       - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
+=======
+      -pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER={POSTGRES_USER}
+>>>>>>> c3bf14305b63924b0f114f38849c7d5ac4cf8a44
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
