@@ -76,11 +76,11 @@ export class CustomerService {
         })
 
         if (!customer) {
-            throw createCustomError(409, "E-mail already exists!");
+            throw createCustomError(404, "User not found!");
         }
 
         if (data.email){
-            if (data.email != customer.email){
+            if (data.email == customer.email){
                 throw createCustomError(409, "Email must be different from the current one!");
             }
             const existentEmail = await prismaClient.customer.findFirst({
@@ -94,15 +94,20 @@ export class CustomerService {
 
         const updatedData: CustomerUpdateDTO = data
 
-        if (data.newPassword && data.currentPassword){
-            const isValid = bcrypt.compare(data.currentPassword, customer.password)
+
+        if (data.password != null && data.currentPassword != null){
+            const isValid = await bcrypt.compare(data.currentPassword, customer.password)
 
             if (!isValid){
                 throw createCustomError(401, "The actual password is incorrect!")
             }
             
-            updatedData.newPassword = await bcrypt.hash(data.newPassword, 10)
-        } else if (data.newPassword && !data.currentPassword || data.currentPassword && !data.newPassword){
+            updatedData.password = await bcrypt.hash(data.password, 10)
+
+            delete updatedData.currentPassword
+
+
+        } else if (data.password && !data.currentPassword || data.currentPassword && !data.password){
             throw createCustomError(400, "Current password or new password is required to update password!");
         }
 
@@ -110,6 +115,9 @@ export class CustomerService {
             where: { id },
             data: updatedData
         });
+
+        console.log(updatedCustomer)
+        console.log(updatedCustomer.password)
 
         const {password, ...customerResponse } = updatedCustomer;
         

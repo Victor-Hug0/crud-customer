@@ -2,6 +2,6 @@ export type CustomerUpdateDTO = {
     name?: string;
     email?: string;
     age?: number;
-    newPassword?: string;
+    password?: string;
     currentPassword?: string
 }
