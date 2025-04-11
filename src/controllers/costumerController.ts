@@ -73,4 +73,21 @@ export class CustomerController {
             }
         }
     }
+
+    async deleteCustomer(request: FastifyRequest<{Params: {id: string}}>, reply: FastifyReply){
+        try {
+            const customerService = this.customerService;
+            const { id } = request.params
+            const deletedCustomer = await customerService.deleteCustomer(id)
+
+            return reply.code(200).send(deletedCustomer)
+        } catch(error){
+            if (typeof error === 'object' && error !== null) {
+                const customError = error as CustomError;
+                reply.code(customError.status).send({ message: customError.message });
+            } else {
+                reply.code(500).send({ message: "Internal Server Error" });
+            }
+        }
+    }
 }

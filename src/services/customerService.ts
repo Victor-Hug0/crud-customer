@@ -46,10 +46,18 @@ export class CustomerService {
         return customer
     }
     
-    async getAll(): Promise<Customer[]> {
-        return await prismaClient.customer.findMany({
-            where: { status: true }
+    async getAll(): Promise<CustomerResponseDTO[]> {
+        const customers =  await prismaClient.customer.findMany({
+            where: { status: true },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                age: true
+            }
         })
+
+        return customers
     }
 
     async getCustomer(id: string): Promise<CustomerResponseDTO | null> {
@@ -60,14 +68,17 @@ export class CustomerService {
                 email: true,
                 age: true
             },
-            where: { id }
+            where: { 
+                id,
+                status: true
+            }
         })
 
         if (!customer) {
-            throw createCustomError(409, "E-mail already exists!")
+            throw createCustomError(404, "User not found!");
         }
 
-        return customer;
+        return customer as CustomerResponseDTO;
     }
 
     async updateCustomer(id: string, data: CustomerUpdateDTO): Promise<CustomerResponseDTO> {
@@ -116,11 +127,23 @@ export class CustomerService {
             data: updatedData
         });
 
-        console.log(updatedCustomer)
-        console.log(updatedCustomer.password)
-
         const {password, ...customerResponse } = updatedCustomer;
         
         return customerResponse as CustomerResponseDTO;
+    }
+
+    async deleteCustomer(id: string): Promise<Customer> {
+        const customer = await prismaClient.customer.update({
+            where: { id },
+            data: {
+                status: false
+            }
+        })
+
+        if (!customer){
+            throw createCustomError(404, "User not found!");
+        }
+
+        return customer
     }
 }

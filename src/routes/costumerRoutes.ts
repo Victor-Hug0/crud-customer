@@ -22,4 +22,8 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     fastify.put("/customer/:id", async (request: FastifyRequest<{Params: {id: string}, Body: CustomerUpdateDTO}>, reply: FastifyReply) => {
         return customerController.updateCustomer(request, reply)
     })
+
+    fastify.delete("/customer/:id", async (request: FastifyRequest<{Params: {id: string}}>, reply: FastifyReply) => {
+        return customerController.deleteCustomer(request, reply)
+    })
 }
