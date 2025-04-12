@@ -17,10 +17,10 @@ export async function checkEmailExist(email: string): Promise<void> {
     }
 }
 
-export function checkEmailChange(newEmail: string, currentEmail: string): void {
+export async function checkEmailChange(newEmail: string, currentEmail: string): Promise<void> {
     if (newEmail === currentEmail){
         throw createCustomError(409, "Email must be different from the current one!");
     }
 
-    checkEmailExist(newEmail)
+    await checkEmailExist(newEmail)
 }

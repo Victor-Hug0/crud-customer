@@ -22,7 +22,7 @@ export class CustomerService {
 
         validatePassoword(password)
 
-        checkEmailExist(email)
+        await checkEmailExist(email)
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
@@ -84,7 +84,7 @@ export class CustomerService {
         }
 
         if (data.email){
-            checkEmailChange(data.email, customer.email)
+            await checkEmailChange(data.email, customer.email)
         }
 
         const updatedData: CustomerUpdateDTO = data
@@ -116,7 +116,7 @@ export class CustomerService {
         return customerResponse as CustomerResponseDTO;
     }
 
-    async deleteCustomer(id: string): Promise<Customer> {
+    async deleteCustomer(id: string): Promise<CustomerResponseDTO> {
         const customer = await prismaClient.customer.update({
             where: { id },
             data: {
@@ -128,6 +128,8 @@ export class CustomerService {
             throw createCustomError(404, "User not found!");
         }
 
-        return customer
+        const {password, ...customerResponse} = customer
+
+        return customerResponse as CustomerResponseDTO 
     }
 }
