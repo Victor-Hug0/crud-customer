@@ -4,6 +4,7 @@ import { CustomerResponseDTO } from "../dtos/CustomerResponseDTO";
 import bcrypt from "bcrypt";
 import { CustomerUpdateDTO } from "../dtos/CustomerUpdateDTO";
 import { createCustomError } from "../exceptions/customException";
+import { validatePassoword, checkEmailChange, checkEmailExist } from "../utils/validations";
 
 export class CustomerService {
 
@@ -19,17 +20,9 @@ export class CustomerService {
 
     async create({name, email, password, age}: Customer): Promise<Customer>{
 
-        if (password.length < 6){
-            throw createCustomError(400, "The password must be at least 6 characters!");
-        }
+        validatePassoword(password)
 
-        const existentEmail = await prismaClient.customer.findFirst({
-            where: { email: email }
-        });
-
-        if (existentEmail) {
-            throw createCustomError(409, "E-mail already exists!")
-        }
+        checkEmailExist(email)
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
@@ -91,16 +84,7 @@ export class CustomerService {
         }
 
         if (data.email){
-            if (data.email == customer.email){
-                throw createCustomError(409, "Email must be different from the current one!");
-            }
-            const existentEmail = await prismaClient.customer.findFirst({
-                where: { email: data.email }
-            });
-    
-            if (existentEmail) {
-                throw createCustomError(409, "E-mail already exists!");
-            }
+            checkEmailChange(data.email, customer.email)
         }
 
         const updatedData: CustomerUpdateDTO = data
