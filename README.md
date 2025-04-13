@@ -28,12 +28,11 @@ Crie um arquivo .env e adicione as seguintes variáveis:
 Após isso, execute os seguintes comandos:
 
 ```sh
+docker compose up -d
 
 npx prisma migrate dev
 
 npx prisma generate
-
-docker compose up -d
 
 npm run dev
 ```
